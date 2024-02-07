@@ -1,0 +1,48 @@
+package android.smartstudy;
+
+import android.content.Context;
+import android.graphics.Color;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
+
+import java.util.Calendar;
+
+public class NoteAdapter extends ArrayAdapter<String> {
+
+    public NoteAdapter(Context context, String[] notes) {
+        super(context, android.R.layout.simple_list_item_1, notes);
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        String note = getItem(position);
+        if (convertView == null)
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.note_cell, parent, false);
+
+        TextView noteCell = convertView.findViewById(R.id.noteCell);
+        if (note.equals(Task.selectedNote))
+            noteCell.setBackgroundColor(Color.parseColor("#CCE5FF"));
+
+        String startTime = "";
+        String endTime = "";
+        String goal = "";
+        for (int i = 0; i < CalendarMain.notesList.size(); i++) {
+            if(CalendarOperations.selectedDate.equals(CalendarMain.notesList.get(i).getDate())
+                    && note.equals(CalendarMain.notesList.get(i).getText())) {
+                goal = CalendarMain.notesList.get(i).getGoal();
+                startTime = CalendarOperations.timeFormatter(CalendarMain.notesList.get(i).getStartTime());
+                int hours = CalendarMain.notesList.get(i).getDuration()/60;
+                int minutes = CalendarMain.notesList.get(i).getDuration() - 60*hours;
+                endTime = CalendarOperations.timeFormatter(CalendarMain.notesList.get(i).getStartTime().plusHours(hours).plusMinutes(minutes));
+            }
+        }
+        String timeText = startTime + " - " + endTime;
+        String goalText = note+" ( "+timeText+" ) "+" Цель/Мотивация: " + goal;
+
+        noteCell.setText(goalText);
+        return convertView;
+    }
+}
