@@ -1,0 +1,174 @@
+package android.smartstudy;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+
+public class CalendarOperations {
+    public static LocalDate selectedDate, firstOfMonth;
+
+    public static String dateFormatter(LocalDate date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+        return date.format(formatter);
+    }
+
+    public static String dateFormatterSimple(LocalDate date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return date.format(formatter);
+    }
+
+    public static String dayFormatter(LocalDate date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E");
+        return date.format(formatter);
+    }
+
+    public static String dayNumberFormatter(LocalDate date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("e");
+        return date.format(formatter);
+    }
+
+    // numer miesiaca - do widoku
+    public static String monthFormatter(LocalDate date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("L");
+        return date.format(formatter);
+    }
+
+    public static String timeFormatter(LocalTime time) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        return time.format(formatter);
+    }
+
+
+    public static ArrayList<LocalDate> fillCalendar(LocalDate date) {
+        ArrayList<LocalDate> daysOfMonth = new ArrayList<>();
+        YearMonth yearMonth = YearMonth.from(date);
+
+        // ile dni w miesiacu
+        int monthLength = yearMonth.lengthOfMonth();
+
+        // cos sie przestawilo o 1 dzien, wiec minusDays
+        firstOfMonth = CalendarOperations.selectedDate.withDayOfMonth(1).minusDays(1);
+        int dayOfWeek = firstOfMonth.getDayOfWeek().getValue();
+
+        for (int i=1; i<=42; i++) {
+            // dzien rozpoczecia i zakonczenia miesiaca we wlasciwym miejscu
+            if(i <= dayOfWeek || i > monthLength + dayOfWeek)
+                daysOfMonth.add(null);
+            else
+                daysOfMonth.add(LocalDate.of(selectedDate.getYear(), selectedDate.getMonth(), i - dayOfWeek));
+        }
+        return daysOfMonth;
+    }
+
+    public static String getHoursAndMins(int hour, int mins) {
+        String hoursAndMinutes;
+        if(hour == 0 && mins == 0) {
+            hoursAndMinutes = "00:00";
+        }
+        else if (hour == 0 && mins >= 10) {
+            hoursAndMinutes = "00:" + mins;
+        }
+        else if (hour == 0 && (mins != 0 && mins < 10)) {
+            hoursAndMinutes = "00:0" + mins;
+        }
+        else if (hour < 10 && mins == 0) {
+            hoursAndMinutes = "0" + hour + ":00";
+        }
+        else if (hour < 10 && (mins != 0 && mins < 10)) {
+            hoursAndMinutes = "0" + hour + ":0" + mins;
+        }
+        else if (hour < 10 && mins >= 10) {
+            hoursAndMinutes = "0" + hour + ":" + mins;
+        }
+        else if (hour >= 10 && mins == 0) {
+            hoursAndMinutes = hour + ":00";
+        }
+        else if (hour >= 10 && (mins != 0 && mins < 10)) {
+            hoursAndMinutes = hour + ":0" + mins;
+        } else {
+            hoursAndMinutes = hour + ":" + mins;
+        }
+        return hoursAndMinutes;
+    }
+    public static String rusDays(int day) {
+        String returnDay = "";
+        switch (day) {
+            case 1:
+                returnDay = "Пон";
+                break;
+            case 2:
+                returnDay = "Вт";
+                break;
+            case 3:
+                returnDay = "Ср";
+                break;
+            case 4:
+                returnDay = "Чет";
+                break;
+            case 5:
+                returnDay = "Пт";
+                break;
+            case 6:
+                returnDay = "Суб";
+                break;
+            case 7:
+                returnDay = "Воскр";
+                break;
+            default:
+                break;
+        }
+        return returnDay;
+    }
+
+    public static String rusMonths(LocalDate date) {
+        String month = "";
+        for (int i = 0; i < 12; i++) {
+            String monthString = CalendarOperations.monthFormatter(date);
+            switch (monthString) {
+                case "1":
+                    month = "Январь";
+                    break;
+                case "2":
+                    month = "Февраль";
+                    break;
+                case "3":
+                    month = "Март";
+                    break;
+                case "4":
+                    month = "Апрель";
+                    break;
+                case "5":
+                    month = "Май";
+                    break;
+                case "6":
+                    month = "Июнь";
+                    break;
+                case "7":
+                    month = "Июль";
+                    break;
+                case "8":
+                    month = "Август";
+                    break;
+                case "9":
+                    month = "Сентябрь";
+                    break;
+                case "10":
+                    month = "Октябрь";
+                    break;
+                case "11":
+                    month = "Ноябрь";
+                    break;
+                case "12":
+                    month = "Декабрь";
+                    break;
+                default:
+                    break;
+            }
+        }
+        String monthYear = month + " " + date.getYear();
+        return monthYear;
+    }
+
+}
